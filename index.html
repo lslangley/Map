@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>RTP Projects</title>
+        <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+      <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+      <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+      <link rel="shortcut icon" sizes="196x196" href="assets/img/arc_logo196.png">
+      <script src='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
+      <link href='https://api.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
+      <link rel="stylesheet" href="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.css"/>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/4.1.7/highcharts.js"></script>
+      <script src="http://code.highcharts.com/modules/exporting.js"></script>
+      <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+      <script type="text/javascript" language="javascript" src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.8/css/dataTables.bootstrap.min.css">
+      <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+      
+      
+      <style>
+       body { margin:50; padding-top: 50px; background-color: white}
+        html, body { height: 100%;
+            width: 100%}
+        .tab-content {
+        	padding-top:50px;
+        }
+        #chartSide {
+        	padding-top:15px;
+        }
+        #map {
+            width: 100%;
+		    min-height: 850px;
+		    -moz-border-radius: 10px;
+			-webkit-border-radius: 10px;
+			border-radius: 10px; /* future proofing */
+			-khtml-border-radius: 10px; /* for old Konqueror browsers */
+        }
+         #summary-table{
+        	height:100px;
+        	overflow: scroll;
+        }
+        #mapTab {
+        	min-height: 100%;
+		    height: 100%;
+		    width: 100%;
+		    min-width: 100%;
+		    /*overflow: hidden;*/
+        }
+        #container {
+        	height: 100%;
+        	width: 100%;
+        	/*overflow: hidden;*/
+        }
+	    a {border: none;}
+	    #chart {
+	    	height:80%;
+	    	/*opacity:0.8;*/
+	    	/*position: absolute;*/
+	    	/*float: right;*/
+	    	/*bottom: 0px;*/
+	    	width: 100%;
+	    	/*display: none;*/
+	    }
+	    .vertical-center {
+			min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+			min-height: 100vh; /* These two lines are counted as one :-)       */
+			display: flex;
+			align-items: center;
+		}
+	    .info {
+		    padding: 50px;
+		    font: 14px/16px 'Droid Serif', serif;
+		    background: white;
+		    background: rgba(255,255,255,0.8);
+		    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+		    border-radius: 5px;
+		}
+		.info .info-controls h4 {
+		    margin: 0 0 5px;
+		    color: #777;
+		}
+		.info-controls {
+		    padding: 100px;
+		    font: 14px/16px 'Droid Serif', serif;
+		    background: white;
+		    background: rgba(255,255,255,1.0);
+		    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+		    border-radius: 5px;
+		    position:absolute; z-index:100; bottom:10px; left:10px;
+		    width: 650px;
+		}
+	    .legend {
+		    line-height: 18px;
+		    color: #555;
+		}
+		.legend i {
+		    width: 18px;
+		    height: 18px;
+		    float: left;
+		    margin-right: 8px;
+		    opacity: 0.7;
+		}
+		.legend .circle {
+		  border-radius: 50%;
+		  opacity:  1.0;
+		  width: 15px;
+		  height: 15px;
+		  margin-top: 0px;
+		}
+        .leaflet-tooltip p {
+			font-size: x-small;
+            margin: 0;
+        }
+        #tableTab {
+			overflow: scroll;
+		}
+        </style>
+  </head>
+
+  <body>
+      <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="contianer-fluid">
+          <div class="navbar-header">
+              <a class="navbar-brand" href="#">
+          	<span><img width="auto" height="50" src="images/arc_logo196.png"></span>
+          	<span style="position:relative;top:2px;">Project Evaluation</span>
+          </a>
+        <ul class="nav navbar-nav">
+            <li role="presentation" class="active" id="mapTabLink"><a href="#mapTab" role="tab" data-toggle="tab">Map</a></li>
+            <li role="presentation" id="tableTabLink"><a href="#tableTab">Table</a></li>
+      </ul> 
+          </div>
+        <ul class="nav navbar-nav navbar-right" stlye= padding="50">
+        <li><a href="#">About</a></li>
+      </ul>
+          </div>
+      </nav>
+         
+        <div id="map"></div>
+      
+      <div class="tab-content col-sm-6" style="">
+	<div role="tabpanel" class="tab-pane active" id="mapTab">
+		<div id="map"></div>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="tableTab" style="overflow:hidden;">
+		<div class="table-responsive" style="overflow:hidden;">
+			<button class="btn btn-primary pull-right" id="filterChart">Filter Data</button>
+			<button class="btn btn-default pull-right" id="clearFilter">Clear</button>
+			<table class="table table-hover arrivals-table" id="projectTable">
+			</table>
+		</div>
+	</div>
+</div>
+      
+      <div id="aboutModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">ARC Project Evaluation Tool</h4>
+      </div>
+      <div class="modal-body">
+
+<p>This map is a test of what may come</p>
+
+		<h5>List of variables</h5>
+		<div id="variable-list">
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+     <!-- //script!//-->
+      
+<script type ="text/javascript">
+         var basemap = L.tileLayer(
+        'http://{s}.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibGNhY2VkYSIsImEiOiIzNmM4MGRlN2I4NDhiY2UxZjA4MmJjZjE5OWEzYjUzNSJ9.Wc5KTJpWxmpxVMZfcuEQNg',
+                                  {     maxZoom: 18     });
+
+        $.getJSON('Proj.json', function(data) {
+                var geojson = L.geoJson(data, { color: "teal",
+                  onEachFeature: function (feature, layer) 
+                    {
+                      layer.bindPopup('<strong style="color:Teal"> Jurisditcion: </strong>'+
+                                      feature.properties.County + '<br />'+
+                                     '<strong style="color:Teal"> ARC ID: </strong>'+ feature.properties.ID +
+                                     '<br/>' + '<strong style="color:Teal"> Type of Project: </strong>' +
+                                     feature.properties.PRJ_TYPE +
+                                     '<br/>' + '<strong style="color:Teal">Project Status: </strong>' +
+                                     feature.properties.STATUS+
+                                     '<br/>' + '<strong style="color:Teal">Description: </strong>' +
+                                     feature.properties.PRJ_DESC);
+                  }
+                });
+        var map = L.map('map').setView([33.82, -84.25], 10);
+        var osmGeocoder = new L.Control.OSMGeocoder({
+              collapsed: false,
+              position: 'topright',
+              text: 'Search for your City',
+          });
+        basemap.addTo(map);
+        geojson.addTo(map);
+        map.addControl(osmGeocoder);    
+        });
+    
+    
+  </script>
+      
+           <script
+        src="http://k4r573n.github.io/leaflet-control-osm-geocoder/Control.OSMGeocoder.js">
+    </script>
+        
+ </body>
+ 
+</html>
+
+<script>
+         
